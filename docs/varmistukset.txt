@@ -1,0 +1,42 @@
+Datan scriptaus:
+-------------------
+SQL
+Laiterekisteri
+task
+generate skripts
+all
+save skript file 
+advance
+types of data chema + data
+(github.com/raision-seudun-koulutuskuntayhtyma/kyberturva2)
+^^ linkitetty skripti tuolla nimella kantaJadata
+new query - paste
+
+
+palautetaan tuhottu tietokanta scriptillä:
+-- siirry hallintatietokantaan
+USE [master];
+GO
+
+-- Yritä ottaa tietokanta online-tilaan
+ALTER DATABASE Laiterekisteri SET ONLINE;
+GO
+
+-- Varmuuskopioi transaktioloki
+BACKUP LOG Laiterekisteri
+To DISK = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\Backup\LaiterekisteriTailLog.log'
+WITH CONTINUE_AFTER_ERROR;
+GO
+
+-- Palautetaan viimeisin täysvarmistus tiedostosta
+RESTORE DATABASE Laiterekisteri
+FROM DISK = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\Backup\Laiterekisteri.bak'
+WITH NORECOVERY;
+GO
+
+-- palautetaan häntäloki
+RESTORE LOG Laiterekisteri
+FROM DISK = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\Backup\LaiterekisteriTailLog.log';
+GO
+
+EXECUTE (F5) hiiren 2
