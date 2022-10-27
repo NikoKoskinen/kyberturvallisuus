@@ -1,0 +1,27 @@
+-- ESIMERKKI TIETOKANNAN HÄNTÄLOKIN LUOMISESTA JA TÄYSVARMISTUKSEN JA HÄNTÄLOKIN PALAUTUKSESTA
+-- siirry hallintatietokantaan
+USE [master];
+GO
+
+-- Yritä ottaa tietokanta online-tilaan
+ALTER DATABASE Laiterekisteri SET ONLINE;
+GO
+
+-- Varmuuskopioi transaktioloki
+-- Transaktioloki (tapahtumaloki) tuhotaan aina täysvamistuksen ottamisen jälkeen joten lokissa on vain uusia tapahtumia
+-- varaudutaan virheisiin CONTINUE_AFTER_ERROR-MÄÄRITTEELLÄ
+BACKUP LOG Laiterekisteri
+To DISK = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\Backup\LaiterekisteriTailLog.log'
+WITH CONTINUE_AFTER_ERROR;
+GO
+
+-- Palautetaan viimeisin täysvarmistus tiedostosta
+RESTORE DATABASE Laiterekisteri
+FROM DISK = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\Backup\Laiterekisteri.bak'
+WITH NORECOVERY;
+GO
+
+-- palautetaan häntäloki
+RESTORE LOG Laiterekisteri
+FROM DISK = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\Backup\LaiterekisteriTailLog.log';
+GO
